@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Дело №247: Северный ветер</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0C0F;color:#E8EAF0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse at 20% 20%,rgba(245,166,35,.04) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(232,69,60,.03) 0%,transparent 50%)}
+.scr{display:none;min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:20px;position:relative;z-index:1}
+.scr.on{display:flex}
+@keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes si{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+@keyframes stamp{0%{opacity:0;transform:scale(1.8) rotate(-8deg)}60%{transform:scale(.95) rotate(-3deg)}100%{opacity:1;transform:scale(1) rotate(-3deg)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes glow{0%,100%{box-shadow:0 0 12px rgba(245,166,35,.4)}50%{box-shadow:0 0 28px rgba(245,166,35,.8),0 0 48px rgba(245,166,35,.3)}}
+@keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100vh)}}
+.afu{animation:fu .4s ease both}
+.asi{animation:si .35s ease both}
+.d1{animation-delay:.08s}.d2{animation-delay:.16s}.d3{animation-delay:.24s}.d4{animation-delay:.32s}
+.btn{cursor:pointer;border:none;font-family:inherit;font-weight:700;transition:all .18s;outline:none}
+.btn:active{transform:scale(.96)}
+.ba{background:linear-gradient(135deg,#F5A623,#E8901A);color:#0A0C0F;border-radius:3px;padding:16px 40px;font-size:15px;letter-spacing:1px}
+.ba:hover{box-shadow:0 8px 28px rgba(245,166,35,.4);transform:translateY(-2px)}
+.bо{background:transparent;border:1px solid #2A2F3A;color:#8892A4;border-radius:3px;padding:12px 28px;font-size:13px;letter-spacing:1px}
+.bо:hover{border-color:#F5A623;color:#F5A623}
+.card{background:#141820;border:1px solid #1E2430;border-radius:6px}
+
+/* ── TITLE ── */
+.badge{background:#F5A623;color:#0A0C0F;font-size:10px;font-weight:700;padding:5px 14px;border-radius:2px;letter-spacing:4px;margin-bottom:20px;display:inline-block}
+.th{font-size:clamp(32px,5vw,58px);font-weight:900;line-height:1.05;text-align:center;margin-bottom:8px;letter-spacing:-1px}
+.th span{color:#F5A623}
+.ts{font-size:11px;color:#5A6070;letter-spacing:4px;text-align:center;margin-bottom:44px;text-transform:uppercase}
+.intro-cards{display:flex;gap:14px;margin-top:40px;flex-wrap:wrap;justify-content:center}
+.ic{padding:14px 18px;background:#141820;border:1px solid #1E2430;border-radius:4px;font-size:11px;color:#5A6070;letter-spacing:1px;text-align:center;min-width:120px}
+.ic strong{display:block;color:#E8EAF0;font-size:14px;margin-bottom:3px}
+
+/* ── RULES ── */
+.rules-wrap{max-width:580px;width:100%}
+.ri{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start}
+.rn{width:22px;height:22px;border-radius:50%;background:rgba(245,166,35,.12);border:1px solid #F5A623;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#F5A623;flex-shrink:0;margin-top:2px}
+.rt{font-size:13px;color:#8892A4;line-height:1.7}
+.rt b{color:#E8EAF0}
+
+/* ── GAME ── */
+.gw{max-width:900px;width:100%;margin:0 auto}
+.gh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.gctr{font-size:10px;color:#5A6070;letter-spacing:3px;text-transform:uppercase}
+.gctr span{color:#F5A623;font-weight:700}
+.gtag{font-size:11px;color:#F5A623;letter-spacing:2px;text-transform:uppercase;background:rgba(245,166,35,.08);padding:4px 12px;border-radius:2px;border:1px solid rgba(245,166,35,.2)}
+.tbar{height:4px;background:#1E2430;border-radius:2px;overflow:hidden;margin-bottom:16px}
+.tf{height:100%;border-radius:2px;transition:width 1s linear;background:linear-gradient(90deg,#2ECC71,#F5A623,#E8453C)}
+.qbox{padding:20px 24px;margin-bottom:16px;border-left:3px solid #F5A623}
+.ql{font-size:11px;color:#5A6070;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.qt{font-size:15px;color:#E8EAF0;line-height:1.6}
+.clue-area{margin-bottom:16px;border-radius:8px;overflow:hidden;border:1px solid #1E2430}
+.hint-banner{background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:4px;padding:10px 16px;margin-bottom:14px;font-size:12px;color:#F5A623;text-align:center;animation:pulse 2s ease-in-out infinite}
+.anomaly{position:relative;cursor:pointer;transition:all .2s}
+.anomaly:hover::after{content:‘🔍 Нашли! Нажмите’;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(245,166,35,.95);color:#0A0C0F;font-size:12px;font-weight:700;padding:6px 14px;border-radius:3px;white-space:nowrap;z-index:10}
+.anomaly.found{outline:3px solid #F5A623;outline-offset:2px;animation:glow 1s ease-in-out infinite}
+.buzzers{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.bz{flex:1;min-width:100px;padding:14px 8px;border-radius:4px;font-size:13px;font-weight:700;letter-spacing:1px;transition:all .2s;border:2px solid transparent}
+.bz.t0{background:rgba(0,212,187,.1);border-color:rgba(0,212,187,.3);color:#00D4BB}
+.bz.t1{background:rgba(255,107,157,.1);border-color:rgba(255,107,157,.3);color:#FF6B9D}
+.bz.t2{background:rgba(255,184,0,.1);border-color:rgba(255,184,0,.3);color:#FFB800}
+.bz:hover{transform:scale(1.03)}
+.bz.pressed{opacity:.5;transform:scale(.97)}
+.bz.winner{animation:glow 0.5s ease-in-out 3}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap}
+.reveal-btn{flex:1;padding:14px;border-radius:4px;font-size:14px;font-weight:700;background:linear-gradient(135deg,#F5A623,#E8901A);color:#0A0C0F;border:none;cursor:pointer;transition:all .2s}
+.reveal-btn:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(245,166,35,.35)}
+.next-btn{padding:14px 24px;border-radius:4px;font-size:14px;font-weight:700;background:transparent;border:1px solid #2A2F3A;color:#8892A4;cursor:pointer;transition:all .2s}
+.next-btn:hover{border-color:#F5A623;color:#F5A623}
+.scores{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.sc{flex:1;min-width:80px;padding:10px;border-radius:4px;text-align:center;background:#141820;border:1px solid #1E2430}
+.sc-name{font-size:10px;color:#5A6070;letter-spacing:1px;margin-bottom:4px;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sc-val{font-size:20px;font-weight:700;color:#E8EAF0}
+
+/* ── REVEAL ── */
+.reveal-wrap{max-width:700px;width:100%}
+.stamp{display:inline-block;border:4px solid #E8453C;color:#E8453C;font-size:28px;font-weight:900;padding:8px 24px;border-radius:4px;transform:rotate(-3deg);letter-spacing:4px;margin-bottom:20px;animation:stamp .4s ease both;text-transform:uppercase}
+.stamp.ok{border-color:#2ECC71;color:#2ECC71}
+.rv-title{font-size:22px;font-weight:700;margin-bottom:12px}
+.rv-text{font-size:14px;color:#8892A4;line-height:1.8;margin-bottom:16px}
+.akos-badge{display:inline-block;background:rgba(245,166,35,.1);border:1px solid rgba(245,166,35,.3);color:#F5A623;font-size:12px;font-weight:700;padding:6px 16px;border-radius:3px;letter-spacing:1px}
+
+/* ── FINAL ── */
+.final-wrap{max-width:600px;width:100%}
+.podium{display:flex;gap:10px;margin:24px 0;flex-wrap:wrap}
+.pd{flex:1;min-width:120px;padding:20px;border-radius:6px;text-align:center;border:1px solid #1E2430;background:#141820}
+.pd.first{border-color:rgba(245,166,35,.4);background:rgba(245,166,35,.06);box-shadow:0 0 24px rgba(245,166,35,.1)}
+.pd-place{font-size:28px;margin-bottom:6px}
+.pd-name{font-size:12px;font-weight:700;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pd-sc{font-size:24px;font-weight:700;color:#F5A623}
+.verdict-box{padding:20px;border-radius:6px;border-left:4px solid #F5A623;margin-bottom:20px;background:#141820}
+.verdict-label{font-size:10px;letter-spacing:3px;color:#F5A623;text-transform:uppercase;margin-bottom:6px}
+.verdict-text{font-size:14px;color:#8892A4;line-height:1.7}
+
+/* ── SOCIAL MOCKUPS ── */
+/* VK */
+.vk-wrap{background:#fff;border-radius:0}
+.vk-header{background:#5181B8;padding:8px 12px;display:flex;align-items:center;gap:8px}
+.vk-logo{background:#fff;color:#5181B8;font-size:10px;font-weight:700;padding:2px 6px;border-radius:2px}
+.vk-post{padding:14px}
+.vk-meta{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.vk-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#5181B8,#3d6a9e);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:700;flex-shrink:0}
+.vk-name{font-size:13px;font-weight:700;color:#2c2d2e}
+.vk-date{font-size:11px;color:#818c99}
+.vk-text{font-size:14px;color:#2c2d2e;line-height:1.6;margin-bottom:12px}
+.vk-img{width:100%;height:140px;background:linear-gradient(135deg,#b8d4f0,#5181B8);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:10px}
+.vk-actions{display:flex;gap:16px;border-top:1px solid #e7e8ec;padding-top:10px}
+.vk-btn{font-size:12px;color:#818c99;display:flex;align-items:center;gap:4px}
+.vk-fine-print{font-size:8px;color:#eee;background:#eee;padding:2px;border-radius:1px;margin-top:6px;user-select:none}
+
+/* TELEGRAM */
+.tg-wrap{background:#212121;border-radius:0;min-height:280px}
+.tg-header{background:#1e1e1e;padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #333}
+.tg-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#54a9eb,#2980b9);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.tg-name{font-size:13px;font-weight:700;color:#fff}
+.tg-status{font-size:11px;color:#888}
+.tg-msgs{padding:12px;display:flex;flex-direction:column;gap:8px}
+.msg{max-width:80%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.5;position:relative}
+.msg.in{background:#2a2a2a;color:#e0e0e0;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.out{background:#2a5885;color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg-time{font-size:10px;color:rgba(255,255,255,.45);margin-top:3px;text-align:right;display:flex;align-items:center;justify-content:flex-end;gap:3px}
+.tg-read{color:#4fc3f7;font-size:12px}
+.tg-date-sep{text-align:center;font-size:10px;color:#666;margin:4px 0;background:#1a1a1a;padding:3px 10px;border-radius:10px;align-self:center}
+
+/* MAGAZINE */
+.mag-wrap{background:#fafafa}
+.mag-header{background:#c0392b;padding:8px 16px;display:flex;align-items:center;justify-content:space-between}
+.mag-logo{color:#fff;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.mag-nav{display:flex;gap:14px}
+.mag-nav span{color:rgba(255,255,255,.7);font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.mag-article{padding:18px}
+.mag-tag{background:#c0392b;color:#fff;font-size:9px;font-weight:700;padding:3px 8px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;display:inline-block}
+.mag-h{font-size:18px;font-weight:700;color:#1a1a1a;margin-bottom:8px;line-height:1.3}
+.mag-byline{font-size:11px;color:#888;margin-bottom:12px}
+.mag-lead{font-size:13px;color:#333;line-height:1.7;margin-bottom:12px}
+.mag-domain{font-size:9px;color:#bbb;text-align:right;margin-top:8px;border-top:1px solid #eee;padding-top:6px}
+.mag-sponsored{font-size:7px;color:#f0f0f0;background:#f0f0f0;padding:1px 2px;display:inline;user-select:none}
+
+/* RATING SITE */
+.rt-wrap{background:#f5f5f5}
+.rt-header{background:#1a1a2e;padding:8px 14px;display:flex;align-items:center;justify-content:space-between}
+.rt-logo{color:#e94560;font-size:13px;font-weight:700;letter-spacing:1px}
+.rt-domain{font-size:10px;color:rgba(255,255,255,.4)}
+.rt-body{padding:14px}
+.rt-title{font-size:15px;font-weight:700;color:#1a1a1a;margin-bottom:4px}
+.rt-subtitle{font-size:10px;color:#888;margin-bottom:14px}
+.rt-item{display:flex;align-items:center;gap:10px;padding:8px 10px;background:#fff;border-radius:4px;margin-bottom:6px;border:1px solid #e0e0e0}
+.rt-rank{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.rt-rank.r1{background:#FFD700;color:#000}
+.rt-rank.r2{background:#e0e0e0;color:#333}
+.rt-rank.r3{background:#cd7f32;color:#fff}
+.rt-rank.rx{background:#f5f5f5;color:#999;border:1px solid #e0e0e0}
+.rt-aname{flex:1;font-size:13px;font-weight:600;color:#1a1a1a}
+.rt-score{font-size:14px;font-weight:700}
+.rt-stars{font-size:10px}
+.rt-reg{font-size:9px;color:#bbb;margin-top:10px;border-top:1px solid #e8e8e8;padding-top:6px}
+.rt-reg .anomaly-text{color:#ddd;font-size:8px;user-select:none}
+
+/* INSTAGRAM */
+.ig-wrap{background:#fff}
+.ig-header-bar{background:#fff;padding:8px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #efefef}
+.ig-logo{font-size:18px;font-weight:700;color:#262626;font-style:italic;letter-spacing:-1px}
+.ig-post-header{padding:10px 12px;display:flex;align-items:center;gap:8px}
+.ig-av{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.ig-uname{font-size:13px;font-weight:700;color:#262626}
+.ig-location{font-size:11px;color:#8e8e8e}
+.ig-img{width:100%;height:160px;background:linear-gradient(135deg,#a8edea,#fed6e3);display:flex;align-items:center;justify-content:center;font-size:48px}
+.ig-actions{padding:10px 12px;display:flex;gap:12px;border-bottom:1px solid #efefef}
+.ig-action{font-size:20px;cursor:pointer}
+.ig-caption{padding:10px 12px}
+.ig-likes{font-size:12px;font-weight:700;color:#262626;margin-bottom:4px}
+.ig-text{font-size:13px;color:#262626;line-height:1.5}
+.ig-tags{font-size:13px;color:#003569;margin-top:3px}
+.ig-no-ad{font-size:11px;color:#8e8e8e;margin-top:4px}
+.ig-archive{background:#f5f5f5;border-top:1px solid #efefef;padding:8px 12px}
+.ig-archive-title{font-size:10px;color:#8e8e8e;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.ig-archive-posts{display:flex;gap:4px;overflow-x:auto}
+.ig-ap{width:50px;height:50px;border-radius:4px;background:linear-gradient(135deg,#667eea,#764ba2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px;color:#fff;font-weight:700;text-align:center;padding:2px;line-height:1.2}
+
+/* REVIEW */
+.rev-wrap{background:#fff}
+.rev-header{background:#fc3f1d;padding:8px 14px;display:flex;align-items:center;gap:8px}
+.rev-logo{color:#fff;font-size:14px;font-weight:700}
+.rev-tabs{display:flex;gap:0;border-bottom:1px solid #e0e0e0;padding:0 12px}
+.rev-tab{padding:8px 14px;font-size:12px;color:#8e8e8e;border-bottom:2px solid transparent}
+.rev-tab.active{color:#fc3f1d;border-bottom-color:#fc3f1d;font-weight:600}
+.rev-list{padding:12px}
+.rev-item{padding:12px;border:1px solid #f0f0f0;border-radius:4px;margin-bottom:8px}
+.rev-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.rev-av{width:28px;height:28px;border-radius:50%;background:#e0e0e0;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#666;flex-shrink:0}
+.rev-uname{font-size:12px;font-weight:700;color:#1a1a1a}
+.rev-date{font-size:10px;color:#8e8e8e;margin-left:auto}
+.rev-stars{color:#fc3f1d;font-size:13px;margin-bottom:5px}
+.rev-text{font-size:12px;color:#333;line-height:1.6}
+.rev-reply{margin-top:10px;padding:10px;background:#f8f8f8;border-radius:4px;border-left:3px solid #e0e0e0}
+.rev-reply-name{font-size:11px;font-weight:700;color:#1a1a1a;margin-bottom:3px}
+.rev-reply-date{font-size:10px;color:#bbb}
+.rev-reply-text{font-size:12px;color:#666;line-height:1.6;margin-top:4px}
+.rev-delay-badge{display:inline-block;background:#fff3cd;border:1px solid #ffc107;color:#856404;font-size:9px;font-weight:700;padding:2px 6px;border-radius:2px;margin-left:6px;animation:pulse 1.5s ease-in-out infinite}
+</style>
+
+</head>
+<body>
+
+<div id="s-title" class="scr on">
+  <div style="text-align:center;max-width:560px">
+    <div class="badge afu">ДЕЛО №247</div>
+    <h1 class="afu d1" style="font-size:clamp(32px,5vw,56px);font-weight:900;line-height:1.05;margin-bottom:8px">
+      Агентство<br><span style="color:#F5A623">«Северный ветер»</span>
+    </h1>
+    <p class="afu d2" style="font-size:11px;color:#5A6070;letter-spacing:4px;margin-bottom:10px;text-transform:uppercase">Расследование PR-нарушений</p>
+    <p class="afu d2" style="font-size:14px;color:#8892A4;margin-bottom:40px;line-height:1.7">В каждой улике спрятана визуальная аномалия.<br>Найдите её — и вы найдёте нарушение.</p>
+    <div class="afu d3" style="display:flex;flex-direction:column;align-items:center;gap:12px">
+      <button class="btn ba" onclick="goSetup()">▶ Начать расследование</button>
+      <button class="btn bо" onclick="goRules()">📋 Правила игры</button>
+    </div>
+    <div class="intro-cards afu d4" style="display:flex;gap:10px;margin-top:36px;flex-wrap:wrap;justify-content:center">
+      <div style="padding:12px 16px;background:#141820;border:1px solid #1E2430;border-radius:4px;font-size:11px;color:#5A6070;text-align:center;min-width:110px"><strong style="display:block;color:#E8EAF0;font-size:18px;margin-bottom:2px">6</strong>улик</div>
+      <div style="padding:12px 16px;background:#141820;border:1px solid #1E2430;border-radius:4px;font-size:11px;color:#5A6070;text-align:center;min-width:110px"><strong style="display:block;color:#F5A623;font-size:18px;margin-bottom:2px">30с</strong>таймер</div>
+      <div style="padding:12px 16px;background:#141820;border:1px solid #1E2430;border-radius:4px;font-size:11px;color:#5A6070;text-align:center;min-width:110px"><strong style="display:block;color:#E8EAF0;font-size:18px;margin-bottom:2px">2–3</strong>команды</div>
+    </div>
+  </div>
+</div>
+
+<div id="s-rules" class="scr">
+  <div style="max-width:580px;width:100%">
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:24px">
+      <button class="btn bо" onclick="go('s-title')">← Назад</button>
+      <h2 style="font-size:24px;font-weight:700;color:#F5A623">Правила игры</h2>
+    </div>
+    <div class="card" style="padding:28px">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="ri"><div class="rn">1</div><div class="rt">На экране появляется <b>реалистичный скриншот</b> — пост ВКонтакте, переписка в Telegram, статья в журнале и другое. В каждом что-то не так.</div></div>
+        <div class="ri"><div class="rn">2</div><div class="rt"><b>Найдите визуальную аномалию</b> — что-то выглядит странно, слишком мелко, скрыто или не на своём месте. Нажмите на неё.</div></div>
+        <div class="ri"><div class="rn">3</div><div class="rt"><b>Таймер 30 секунд.</b> Кто первый нажал баззер своей команды — отвечает вслух. Называет нарушение и по возможности пункт Кодекса АКОС.</div></div>
+        <div class="ri"><div class="rn">4</div><div class="rt"><b>Модератор</b> нажимает «Раскрыть» — на экране появляется объяснение и АКОС-привязка. Правильный ответ = 1 балл, пункт кодекса = ещё 1 балл.</div></div>
+        <div class="ri"><div class="rn">5</div><div class="rt"><b>6 улик, 6 раундов.</b> В конце — итоговый счёт и финальный вердикт для каждого агентства.</div></div>
+      </div>
+    </div>
+    <button class="btn ba" style="width:100%;margin-top:16px" onclick="goSetup()">▶ Начать игру</button>
+  </div>
+</div>
+
+<div id="s-setup" class="scr">
+  <div style="max-width:400px;width:100%">
+    <div class="afu" style="text-align:center;margin-bottom:28px">
+      <p style="font-size:10px;color:#5A6070;letter-spacing:4px;text-transform:uppercase;margin-bottom:8px">Создание команд</p>
+      <h2 style="font-size:26px;font-weight:700;margin-bottom:6px">Состав детективов</h2>
+      <p style="font-size:13px;color:#5A6070">Введите названия команд-агентств</p>
+    </div>
+    <div class="card afu d1" style="padding:24px">
+      <div style="margin-bottom:20px">
+        <div style="font-size:10px;letter-spacing:3px;color:#5A6070;text-transform:uppercase;margin-bottom:10px">Число команд</div>
+        <div style="display:flex;gap:10px" id="nc-btns">
+          <button class="btn" onclick="setNC(2)" id="nc2" style="flex:1;padding:12px;border-radius:4px;font-size:18px;font-weight:700;border:2px solid #1E2430;background:transparent;color:#5A6070;cursor:pointer;transition:all .2s">2</button>
+          <button class="btn" onclick="setNC(3)" id="nc3" style="flex:1;padding:12px;border-radius:4px;font-size:18px;font-weight:700;border:2px solid #F5A623;background:rgba(245,166,35,.1);color:#F5A623;cursor:pointer;transition:all .2s">3</button>
+        </div>
+      </div>
+      <div style="margin-bottom:24px" id="name-inputs">
+        <div style="font-size:10px;letter-spacing:3px;color:#5A6070;text-transform:uppercase;margin-bottom:10px">Названия команд</div>
+      </div>
+      <button class="btn ba" style="width:100%" onclick="startGame()">▶ Начать расследование</button>
+    </div>
+  </div>
+</div>
+
+<div id="s-game" class="scr" style="align-items:stretch;justify-content:flex-start;padding:14px">
+  <div class="gw">
+    <div class="gh">
+      <div class="gctr">Улика <span id="clue-n">1</span> из 6</div>
+      <div class="gtag" id="clue-tag">ВКонтакте</div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span id="t-lbl" style="font-size:16px;font-weight:700;color:#F5A623;min-width:32px;text-align:right">30</span>
+        <button class="btn bо" id="t-btn" onclick="toggleT()" style="padding:5px 12px;font-size:12px">▶</button>
+      </div>
+    </div>
+    <div class="tbar"><div id="tbar" class="tf" style="width:100%"></div></div>
+    <div id="scores-row" class="scores"></div>
+    <div class="card qbox" style="margin-bottom:12px">
+      <div class="ql">🔍 Задание</div>
+      <div class="qt" id="clue-q">Найдите аномалию в этом посте</div>
+    </div>
+    <div class="hint-banner" id="hint-banner">Внимательно изучите материал — что-то здесь выглядит неправильно</div>
+    <div class="clue-area" id="clue-area"></div>
+    <div class="buzzers" id="buzzers-row"></div>
+    <div class="ctrl">
+      <button class="btn reveal-btn" onclick="doReveal()">🔓 Раскрыть нарушение</button>
+      <button class="btn next-btn" id="next-btn" onclick="nextClue()" style="display:none">Следующая улика →</button>
+    </div>
+  </div>
+</div>
+
+<div id="s-reveal" class="scr">
+  <div class="reveal-wrap">
+    <div id="rv-stamp" class="stamp">НАРУШЕНИЕ</div>
+    <h2 class="rv-title" id="rv-title">Заголовок</h2>
+    <p class="rv-text" id="rv-text">Объяснение</p>
+    <div id="rv-anomaly" style="margin-bottom:16px;font-size:13px;color:#F5A623;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.2);padding:12px 16px;border-radius:4px"></div>
+    <div class="akos-badge" id="rv-akos">п. АКОС</div>
+    <div style="margin-top:24px;display:flex;gap:10px">
+      <button class="btn ba" onclick="goFromReveal()">Продолжить →</button>
+    </div>
+  </div>
+</div>
+
+<div id="s-final" class="scr">
+  <div class="final-wrap">
+    <div class="afu" style="text-align:center;margin-bottom:24px">
+      <div style="font-size:40px;margin-bottom:10px">🏛️</div>
+      <p style="font-size:10px;color:#5A6070;letter-spacing:4px;text-transform:uppercase;margin-bottom:6px">Расследование завершено</p>
+      <h1 style="font-size:32px;font-weight:700;margin-bottom:4px">Вердикт суда</h1>
+      <p style="font-size:13px;color:#5A6070">«Северный ветер» систематически нарушал этические нормы</p>
+    </div>
+    <div id="podium" class="podium"></div>
+    <div class="verdict-box">
+      <div class="verdict-label">Итоговый вывод</div>
+      <div class="verdict-text">Агентство «Северный ветер» использовало пять из шести выявленных манипулятивных техник. Все они нарушают базовые принципы Кодекса АКОС — честность, прозрачность и уважение к аудитории. Команда, набравшая наибольший счёт, доказала: находить манипуляцию — профессиональный навык PR-специалиста.</div>
+    </div>
+    <div style="margin-bottom:16px">
+      <div style="font-size:10px;color:#5A6070;letter-spacing:3px;text-transform:uppercase;margin-bottom:12px">Все нарушения по делу</div>
+      <div id="all-violations" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <button class="btn ba" style="width:100%" onclick="resetGame()">↺ Новое расследование</button>
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+const CLUES=[
+  {
+    tag:'ВКонтакте',
+    q:'Изучите рекламный пост агентства «Северный ветер». Что здесь скрыто от клиентов?',
+    hint:'Обратите внимание на мелкие детали — иногда важное прячут там, где никто не смотрит.',
+    anomaly:'Мелкий текст внизу поста намеренно сделан белым на белом фоне — он есть, но нечитаем.',
+    title:'Скрытый дисклеймер',
+    text:'Пост обещает «всё включено» — фотосессию на льдине, встречу с полярниками, сувениры. Но внизу мелким белым текстом на белом фоне скрыта приписка: «услуги предоставляются за дополнительную плату». Это намеренное сокрытие существенных условий.',
+    akos:'п. 2.2.4 АКОС — принцип максимальной прозрачности. п. 5.4 АКОС — запрет вводящей в заблуждение информации',
+    html:`<div class="vk-wrap">
+      <div class="vk-header"><span class="vk-logo">VK</span><span style="color:rgba(255,255,255,.7);font-size:12px;margin-left:6px">Северный ветер — Арктические туры</span></div>
+      <div class="vk-post">
+        <div class="vk-meta"><div class="vk-av">СВ</div><div><div class="vk-name">Северный ветер</div><div class="vk-date">Вчера в 14:32 · Реклама</div></div></div>
+        <div class="vk-text">❄️ <strong>ВСЁ ВКЛЮЧЕНО в стоимость тура!</strong><br><br>✅ Фотосессия на льдине с профессиональным фотографом<br>✅ Встреча с настоящими полярниками<br>✅ Эксклюзивный сувенирный набор<br>✅ Перелёт, трансфер, проживание<br><br>🎯 <strong>Бронируйте прямо сейчас — мест осталось мало!</strong></div>
+        <div class="vk-img">🧊</div>
+        <div class="anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию">
+          <div class="vk-fine-print">*Фотосессия, встреча с полярниками и сувениры предоставляются за дополнительную плату и не входят в базовую стоимость тура. Условия уточняйте у менеджера.</div>
+        </div>
+        <div class="vk-actions"><div class="vk-btn">👍 1 247</div><div class="vk-btn">💬 89</div><div class="vk-btn">↗️ 312</div></div>
+      </div>
+    </div>`
+  },
+  {
+    tag:'Telegram',
+    q:'Клиент обратился в поддержку агентства. Найдите нарушение в этой переписке.',
+    hint:'Обратите внимание на даты и статусы сообщений.',
+    anomaly:'Клиент написал жалобу 14 дней назад. Сообщение компании отмечено как прочитанное — но ответ пришёл только сейчас, и он шаблонный.',
+    title:'Намеренное игнорирование жалобы',
+    text:'Сообщение клиента прочитано 14 дней назад — это видно по синим галочкам с датой. Ответ пришёл только сейчас, спустя две недели, и является шаблонным «Спасибо за обращение». Это намеренное затягивание и игнорирование реальной проблемы.',
+    akos:'п. 2.2.3 АКОС — соблюдение обязательств и предоставление услуг высокого качества',
+    html:`<div class="tg-wrap">
+      <div class="tg-header"><div class="tg-av">СВ</div><div><div class="tg-name">Северный ветер — Поддержка</div><div class="tg-status">был(а) в сети давно</div></div></div>
+      <div class="tg-msgs">
+        <div class="tg-date-sep">14 дней назад</div>
+        <div class="msg in">Здравствуйте! Мне обещали фотосессию на льдине в составе тура, но по прибытии сказали что это платная услуга. Это противоречит вашей рекламе. Прошу вернуть разницу или объяснить ситуацию.<div class="msg-time">14:21 <span class="tg-read anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию" style="cursor:pointer" title="Прочитано 14 дней назад">✓✓</span></div></div>
+        <div class="tg-date-sep">Сегодня</div>
+        <div class="msg out">Уважаемый клиент! Спасибо за ваше обращение. Мы ценим каждого нашего гостя и всегда стремимся к высокому уровню сервиса. Ваше мнение очень важно для нас.<div class="msg-time">09:44 ✓</div></div>
+      </div>
+    </div>`
+  },
+  {
+    tag:'Тревел-журнал',
+    q:'Прочитайте статью о лучших арктических турах. Где спрятана аномалия?',
+    hint:'Посмотрите на все мелкие элементы — шапку, подпись, метаданные.',
+    anomaly:'Статья помечена как «Выбор редакции», но в самом низу мелким шрифтом указан домен — он принадлежит самому агентству «Северный ветер», а не журналу.',
+    title:'Нативная реклама под видом редакционного материала',
+    text:'Материал оформлен как независимый редакционный обзор с тегом «Выбор редакции». Однако в самом низу страницы скрыт домен northwind-tours.ru — это сайт агентства «Северный ветер», а не редакции журнала. Статья является оплаченным рекламным контентом без соответствующей маркировки.',
+    akos:'п. 5.2 АКОС — запрет на публикации без пометки «реклама». п. 6.9 АКОС — маркировка рекламного контента обязательна',
+    html:`<div class="mag-wrap">
+      <div class="mag-header"><div class="mag-logo">ARCTIC TRAVEL</div><div class="mag-nav"><span>Маршруты</span><span>Отели</span><span>Советы</span></div></div>
+      <div class="mag-article">
+        <div class="mag-tag">✦ Выбор редакции</div>
+        <div class="mag-h">Топ-5 арктических туров 2024: куда поехать этой зимой</div>
+        <div class="mag-byline">Редакция Arctic Travel · 15 октября 2024</div>
+        <div class="mag-lead">Наши эксперты протестировали лучшие предложения сезона. <strong>Первое место уверенно занимает агентство «Северный ветер»</strong> — безупречный сервис, уникальные маршруты и незабываемые впечатления. По совокупности критериев это лучший выбор для требовательных путешественников...</div>
+        <div class="mag-sponsored anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию">партнёрский материал</div>
+        <div class="mag-domain anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию">© 2024 northwind-tours.ru · Все права защищены</div>
+      </div>
+    </div>`
+  },
+  {
+    tag:'Рейтинговый сайт',
+    q:'Изучите независимый рейтинг арктических агентств. Что выглядит подозрительно?',
+    hint:'Обратите внимание на детали сайта — домен, дату регистрации, структуру оценок.',
+    anomaly:'Внизу страницы мелким шрифтом указана дата регистрации домена: 3 дня назад. «Независимый рейтинг» создан прямо перед его публикацией.',
+    title:'Фейковый независимый рейтинг',
+    text:'Сайт позиционирует себя как «независимый отраслевой рейтинг», однако дата регистрации домена — всего 3 дня назад. Рейтинг был создан специально для этой публикации. Все конкуренты получили оценки 3-5, тогда как «Северный ветер» — 9.8 без каких-либо обоснований.',
+    akos:'п. 2.3.4 АКОС — запрет на порочащую конкурентов информацию. п. 1.5 АКОС — правила добросовестной конкуренции. ст. 14.3 ФЗ «О защите конкуренции»',
+    html:`<div class="rt-wrap">
+      <div class="rt-header"><div class="rt-logo">⭐ ARCTIC RATING</div><div class="rt-domain anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию" style="cursor:pointer">arctic-rating-2024.ru</div></div>
+      <div class="rt-body">
+        <div class="rt-title">Независимый рейтинг арктических агентств 2024</div>
+        <div class="rt-subtitle">Экспертная оценка по 47 критериям</div>
+        <div class="rt-item"><div class="rt-rank r1">1</div><div class="rt-aname">Северный ветер</div><div><div class="rt-score" style="color:#F5A623">9.8</div><div class="rt-stars">★★★★★</div></div></div>
+        <div class="rt-item"><div class="rt-rank r2">2</div><div class="rt-aname">АркТурс</div><div><div class="rt-score" style="color:#888">4.2</div><div class="rt-stars" style="color:#888">★★☆☆☆</div></div></div>
+        <div class="rt-item"><div class="rt-rank r3">3</div><div class="rt-aname">ПолюсТревел</div><div><div class="rt-score" style="color:#888">3.8</div><div class="rt-stars" style="color:#888">★★☆☆☆</div></div></div>
+        <div class="rt-item"><div class="rt-rank rx">4</div><div class="rt-aname">СеверЭкспедиции</div><div><div class="rt-score" style="color:#888">3.1</div><div class="rt-stars" style="color:#888">★☆☆☆☆</div></div></div>
+        <div class="rt-reg"><span class="anomaly-text anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию" style="cursor:pointer;color:#ddd;font-size:9px">Домен зарегистрирован: 3 дня назад · Данные основаны на собственной методологии · ООО «Северный ветер Медиа»</span></div>
+      </div>
+    </div>`
+  },
+  {
+    tag:'Instagram',
+    q:'Блогер опубликовала пост о туре. Найдите то, чего здесь не хватает — или что выдаёт схему.',
+    hint:'Посмотрите на архив публикаций блогера внизу поста.',
+    anomaly:'В архиве постов за последний месяц — 8 одинаковых «восторженных личных обзоров» от разных брендов. Это явно не личные впечатления, а платные публикации без маркировки.',
+    title:'Скрытая реклама через инфлюенсера',
+    text:'Пост оформлен как личное впечатление блогера — без какой-либо пометки «реклама» или «партнёрский материал». Однако архив её публикаций за месяц показывает 8 аналогичных «личных» постов от разных брендов. Это систематическое сотрудничество за плату без обязательной маркировки.',
+    akos:'п. 6.9 АКОС — запрет на скрытую рекламу в социальных сетях. п. 5.5 АКОС — запрет на публикации под вымышленными именами',
+    html:`<div class="ig-wrap">
+      <div class="ig-header-bar"><div class="ig-logo">Instagram</div><span style="font-size:20px;color:#262626">✈️</span></div>
+      <div class="ig-post-header"><div class="ig-av">А</div><div><div class="ig-uname">anna_travels_ru</div><div class="ig-location">📍 Архипелаг Шпицберген</div></div></div>
+      <div class="ig-img">🌊</div>
+      <div class="ig-actions"><span class="ig-action">🤍</span><span class="ig-action">💬</span><span class="ig-action">↗️</span></div>
+      <div class="ig-caption">
+        <div class="ig-likes">4 829 отметок «Нравится»</div>
+        <div class="ig-text"><strong>anna_travels_ru</strong> Только что вернулась из самого невероятного путешествия в своей жизни! 🥹❄️ «Северный ветер» — это не просто тур, это опыт на всю жизнь. Безупречный сервис, потрясающие виды, и команда которая делает невозможное возможным!</div>
+        <div class="ig-tags">#арктика #путешествия #северныйветер #арктическийтур</div>
+        <div class="ig-no-ad">2 часа назад · 312 комментариев</div>
+      </div>
+      <div class="ig-archive anomaly" onclick="markAnomaly(this)" title="Нажмите если нашли аномалию" style="cursor:pointer">
+        <div class="ig-archive-title">Посты за последний месяц</div>
+        <div class="ig-archive-posts">
+          <div class="ig-ap" style="background:linear-gradient(135deg,#667eea,#764ba2)">Лучший тур! 🌊</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#f093fb,#f5576c)">Невероятно! ✈️</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#4facfe,#00f2fe)">Топ отель! 🏨</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#43e97b,#38f9d7)">Мастхэв! 🎒</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#fa709a,#fee140)">Лучший! ⭐</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#a18cd1,#fbc2eb)">Рекомендую!</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#ffecd2,#fcb69f)">Вау тур! 🌈</div>
+          <div class="ig-ap" style="background:linear-gradient(135deg,#a1c4fd,#c2e9fb)">Must see!</div>
+        </div>
+      </div>
+    </div>`
+  },
+  {
+    tag:'Яндекс Карты',
+    q:'Найдите аномалию в ответе компании на отзыв клиента.',
+    hint:'Обратите внимание на временные метки — когда написан отзыв и когда пришёл ответ.',
+    anomaly:'Клиент написал отзыв 3 месяца назад. Ответ компании помечен «сегодня» — значок замедленного ответа выделяется рядом с датой.',
+    title:'Формальный ответ спустя три месяца',
+    text:'Клиент написал детальный негативный отзыв три месяца назад. Компания ответила только сегодня, и ответ является полностью шаблонным — без упоминания конкретных проблем клиента, без предложения решения, без извинений по существу. Это имитация работы с обратной связью.',
+    akos:'п. 2.2.3 АКОС — обязательство соблюдать взятые обязательства и стремиться к высокому качеству услуг',
+    html:`<div class="rev-wrap">
+      <div class="rev-header"><div class="rev-logo">Яндекс Карты</div><span style="color:rgba(255,255,255,.6);font-size:12px">Северный ветер</span></div>
+      <div class="rev-tabs"><div class="rev-tab active">Отзывы (247)</div><div class="rev-tab">Фото</div><div class="rev-tab">Информация</div></div>
+      <div class="rev-list">
+        <div class="rev-item">
+          <div class="rev-top"><div class="rev-av">М</div><div><div class="rev-uname">Михаил П.</div></div><div class="rev-date">3 месяца назад</div></div>
+          <div class="rev-stars">★☆☆☆☆</div>
+          <div class="rev-text">Крайне разочарован. В описании тура были указаны фотосессия на льдине и встреча с полярниками как включённые услуги. По факту — за дополнительную плату. Почему это не указано явно? Это откровенный обман. На жалобы менеджеры не реагируют уже два месяца.</div>
+          <div class="rev-reply">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:4px">
+              <div class="rev-reply-name">Северный ветер (официальный представитель)</div>
+              <div style="display:flex;align-items:center;gap:6px">
+                <span class="rev-reply-date">Сегодня</span>
+                <span class="rev-delay-badge anomaly" onclick="markAnomaly(this)" style="cursor:pointer" title="Нажмите если нашли аномалию">⏱ Ответ через 3 мес.</span>
+              </div>
+            </div>
+            <div class="rev-reply-text">Уважаемый Михаил! Спасибо за ваш отзыв. Нам очень жаль, что у вас сложилось такое впечатление о нашем сервисе. Мы всегда стремимся к высокому качеству обслуживания и ценим каждого нашего гостя. Надеемся увидеть вас снова!</div>
+          </div>
+        </div>
+      </div>
+    </div>`
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+let G={nT:3,names:['','',''],scores:[0,0,0],clue:0,timer:30,trun:false,revealed:false,anomalyFound:false,buzz:-1};
+let TI=null;
+
+// ── UTILS ──────────────────────────────────────────────────────────────────────
+function go(id){
+  document.querySelectorAll('.scr').forEach(s=>s.classList.remove('on'));
+  document.getElementById(id).classList.add('on');
+  window.scrollTo(0,0);
+}
+function goRules(){go('s-rules')}
+function goSetup(){buildSetup();go('s-setup')}
+
+function setNC(n){
+  G.nT=n;
+  document.getElementById('nc2').style.border=n===2?'2px solid #F5A623':'2px solid #1E2430';
+  document.getElementById('nc2').style.background=n===2?'rgba(245,166,35,.1)':'transparent';
+  document.getElementById('nc2').style.color=n===2?'#F5A623':'#5A6070';
+  document.getElementById('nc3').style.border=n===3?'2px solid #F5A623':'2px solid #1E2430';
+  document.getElementById('nc3').style.background=n===3?'rgba(245,166,35,.1)':'transparent';
+  document.getElementById('nc3').style.color=n===3?'#F5A623':'#5A6070';
+  buildSetup();
+}
+
+function buildSetup(){
+  const inp=document.getElementById('name-inputs');
+  const colors=['#00D4BB','#FF6B9D','#FFB800'];
+  let h='<div style="font-size:10px;letter-spacing:3px;color:#5A6070;text-transform:uppercase;margin-bottom:10px">Названия агентств</div>';
+  for(let i=0;i<G.nT;i++){
+    h+=`<div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${colors[i]};flex-shrink:0;box-shadow:0 0 8px ${colors[i]}"></div>
+      <input id="tn${i}" value="${G.names[i]||''}" placeholder="Название агентства ${i+1}..." 
+        style="flex:1;background:#1E2430;border:1px solid #252A34;border-radius:4px;padding:10px 12px;color:#E8EAF0;font-size:14px;outline:none;font-family:inherit;transition:border .2s"
+        onfocus="this.style.borderColor='#F5A623'" onblur="this.style.borderColor='#252A34'"/>
+    </div>`;
+  }
+  inp.innerHTML=h;
+}
+
+function startGame(){
+  const colors=['#00D4BB','#FF6B9D','#FFB800'];
+  for(let i=0;i<G.nT;i++){
+    const el=document.getElementById('tn'+i);
+    G.names[i]=el&&el.value.trim()?el.value.trim():`Агентство ${i+1}`;
+  }
+  G.scores=Array(G.nT).fill(0);
+  G.clue=0;
+  loadClue();
+  go('s-game');
+}
+
+function loadClue(){
+  const c=CLUES[G.clue];
+  G.timer=30;G.trun=false;G.revealed=false;G.anomalyFound=false;G.buzz=-1;
+  clearInterval(TI);
+
+  document.getElementById('clue-n').textContent=G.clue+1;
+  document.getElementById('clue-tag').textContent=c.tag;
+  document.getElementById('clue-q').textContent=c.q;
+  document.getElementById('hint-banner').textContent='🔍 '+c.hint;
+  document.getElementById('clue-area').innerHTML=c.html;
+  document.getElementById('tbar').style.width='100%';
+  document.getElementById('t-lbl').textContent='30';
+  document.getElementById('t-lbl').style.color='#F5A623';
+  document.getElementById('t-btn').textContent='▶';
+  document.getElementById('next-btn').style.display='none';
+
+  // scores
+  const colors=['#00D4BB','#FF6B9D','#FFB800'];
+  document.getElementById('scores-row').innerHTML=G.names.slice(0,G.nT).map((n,i)=>
+    `<div class="sc" style="border-color:${colors[i]}22"><div class="sc-name" style="color:${colors[i]}">${n}</div><div class="sc-val">${G.scores[i]}</div></div>`
+  ).join('');
+
+  // buzzers
+  document.getElementById('buzzers-row').innerHTML=G.names.slice(0,G.nT).map((n,i)=>
+    `<button class="btn bz t${i}" id="bz${i}" onclick="buzz(${i})">${n}</button>`
+  ).join('');
+}
+
+function toggleT(){
+  if(G.revealed)return;
+  G.trun?pauseTimer():startTimer();
+}
+
+function startTimer(){
+  G.trun=true;document.getElementById('t-btn').textContent='⏸';
+  TI=setInterval(()=>{
+    G.timer--;
+    const pct=G.timer/30*100;
+    document.getElementById('tbar').style.width=pct+'%';
+    const lbl=document.getElementById('t-lbl');
+    lbl.textContent=G.timer;
+    lbl.style.color=pct>50?'#2ECC71':pct>25?'#F5A623':'#E8453C';
+    if(G.timer<=0){clearInterval(TI);G.trun=false;document.getElementById('t-btn').textContent='▶';}
+  },1000);
+}
+
+function pauseTimer(){
+  clearInterval(TI);G.trun=false;document.getElementById('t-btn').textContent='▶';
+}
+
+function buzz(i){
+  if(G.buzz>=0||G.revealed)return;
+  G.buzz=i;
+  clearInterval(TI);G.trun=false;
+  document.querySelectorAll('.bz').forEach((b,j)=>{
+    if(j===i)b.classList.add('winner');
+    else b.classList.add('pressed');
+  });
+}
+
+function markAnomaly(el){
+  if(G.revealed)return;
+  el.classList.add('found');
+  G.anomalyFound=true;
+}
+
+function doReveal(){
+  clearInterval(TI);G.trun=false;G.revealed=true;
+  const c=CLUES[G.clue];
+  document.getElementById('rv-stamp').textContent='НАРУШЕНИЕ';
+  document.getElementById('rv-stamp').className='stamp';
+  document.getElementById('rv-title').textContent=c.title;
+  document.getElementById('rv-text').textContent=c.text;
+  document.getElementById('rv-anomaly').innerHTML='🔍 <strong>Аномалия:</strong> '+c.anomaly;
+  document.getElementById('rv-akos').textContent=c.akos;
+  go('s-reveal');
+}
+
+function goFromReveal(){
+  document.getElementById('next-btn').style.display='block';
+  go('s-game');
+  if(G.clue<CLUES.length-1){
+    G.clue++;
+    loadClue();
+  } else {
+    showFinal();
+  }
+}
+
+function nextClue(){
+  if(G.clue>=CLUES.length-1){showFinal();return;}
+  G.clue++;loadClue();
+}
+
+function showFinal(){
+  const colors=['#00D4BB','#FF6B9D','#FFB800'];
+  const sorted=[...Array(G.nT).keys()].sort((a,b)=>G.scores[b]-G.scores[a]);
+  const places=['🥇','🥈','🥉'];
+  document.getElementById('podium').innerHTML=sorted.map((ti,rank)=>
+    `<div class="pd ${rank===0?'first':''}">
+      <div class="pd-place">${places[rank]||'🏅'}</div>
+      <div class="pd-name" style="color:${colors[ti]}">${G.names[ti]}</div>
+      <div class="pd-sc">${G.scores[ti]}</div>
+      <div style="font-size:10px;color:#5A6070;margin-top:3px">баллов</div>
+    </div>`
+  ).join('');
+
+  document.getElementById('all-violations').innerHTML=CLUES.map((c,i)=>
+    `<div style="display:flex;gap:10px;padding:10px 14px;background:#141820;border-radius:4px;border-left:3px solid #E8453C;align-items:flex-start">
+      <span style="font-size:10px;color:#5A6070;min-width:60px;padding-top:2px;letter-spacing:1px">Улика ${i+1}</span>
+      <div><div style="font-size:13px;font-weight:600;color:#E8EAF0;margin-bottom:2px">${c.title}</div><div style="font-size:11px;color:#5A6070">${c.akos.split('.')[0]}</div></div>
+    </div>`
+  ).join('');
+
+  go('s-final');
+}
+
+function resetGame(){
+  G={nT:3,names:['','',''],scores:[0,0,0],clue:0,timer:30,trun:false,revealed:false,anomalyFound:false,buzz:-1};
+  clearInterval(TI);
+  go('s-title');
+}
+
+// init
+buildSetup();
+</script>
+
+</body>
+</html>
